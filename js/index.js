@@ -9,6 +9,9 @@ var model = {
   userSelection: "",
   computerSelection: "",
   currentTurn: "",
+  winningModes:[[0,1,2],[3,4,5],[6,7,8],
+                    [0,3,6],[1,4,7],[2,5,8],
+                      [0,4,8],[2,4,6]],
   currentBoardState:defualtBoard,
   // actualBoard:function(){
   //   var  subarr=[],mainArr=[];
@@ -21,16 +24,21 @@ var model = {
   winningScenarios:function(){
     var  subarr=[],mainArr=[];
     //for vertical
-    for (var i = 0; i < this.currentBoardState.length; i++) {
-      subarr.push(this.currentBoardState[i]);
-      if(subarr.length==3){mainArr.push(subarr); subarr=[];}
-    }
-    //for horizontal
-    mainArr.push([this.currentBoardState[0],this.currentBoardState[3],this.currentBoardState[6]]);
-    mainArr.push([this.currentBoardState[1],this.currentBoardState[4],this.currentBoardState[7]]);
-    mainArr.push([this.currentBoardState[2],this.currentBoardState[5],this.currentBoardState[8]]);
-    mainArr.push([this.currentBoardState[0],this.currentBoardState[4],this.currentBoardState[8]]);
-    mainArr.push([this.currentBoardState[2],this.currentBoardState[4],this.currentBoardState[6]]);
+      for(var k in this.winningModes){
+        var p = this.winningModes[k];
+        mainArr.push([this.currentBoardState[p[0]],this.currentBoardState[p[1]],this.currentBoardState[p[2]]]);
+      }
+
+    // for (var i = 0; i < this.currentBoardState.length; i++) {
+    //   subarr.push(this.currentBoardState[i]);
+    //   if(subarr.length==3){mainArr.push(subarr); subarr=[];}
+    // }
+    // //for horizontal
+    // mainArr.push([this.currentBoardState[0],this.currentBoardState[3],this.currentBoardState[6]]);
+    // mainArr.push([this.currentBoardState[1],this.currentBoardState[4],this.currentBoardState[7]]);
+    // mainArr.push([this.currentBoardState[2],this.currentBoardState[5],this.currentBoardState[8]]);
+    // mainArr.push([this.currentBoardState[0],this.currentBoardState[4],this.currentBoardState[8]]);
+    // mainArr.push([this.currentBoardState[2],this.currentBoardState[4],this.currentBoardState[6]]);
     return mainArr;
   },
   WonBy:null,
@@ -45,6 +53,7 @@ var controller = {
   newGameState: function() {
     model.userSelection = "a";
     model.computerSelection = "a";
+    model.currentBoardState= ["","","","","","","","",""];
     view.removeAllClicks();
     view.loadUserClicks();
     view.loadOptionsClicks();
@@ -105,12 +114,14 @@ var controller = {
     },
     winningStatus:function(){
      if(this.checkForplayerOne()){
-       model.WonBy="player1";
-       console.log("WON IT!!!! "+model.WonBy+" in "+ model.WoninRow);
+       model.WonBy="Player 1";
+       view.showWinningStatus(model.WonBy+" Won!!!",model.WoninRow)
+       //console.log("WON IT!!!! "+model.WonBy+" in "+ model.WoninRow);
+
      }
      else if(this.checkForplayerTwo()){
-         model.WonBy="player2";
-         console.log("WON IT!!!! "+model.WonBy+" in "+ model.WoninRow);
+         model.WonBy="Player 2";
+         view.showWinningStatus(model.WonBy+" Won!!!",model.WoninRow)
      }
     }
 
@@ -149,6 +160,23 @@ var controller = {
 
       });
     },
+    showWinningStatus:function(winningStatustext,WoninRow){
+      var winningRowIndexes = model.winningModes[WoninRow];
+      for(var a=0;a<winningRowIndexes.length;a++){
+        $(".inputBox:eq( "+winningRowIndexes[a]+" )").addClass("winningRow");
+      }
+      // $(".inputBox:eq( 2 )").css({"background-color":"rgba(0,0,0,0.1)","color":"#E6D3A7"});
+      // $(".inputBox:eq( 1 )").css({"background-color":"rgba(0,0,0,0.1)","color":"#E6D3A7"});
+      // $(".inputBox:eq( 0 )").css({"background-color":"rgba(0,0,0,0.1)","color":"#E6D3A7"});
+      swal({
+        title: winningStatustext,
+        // type: 'success',
+        timer: 800,
+        showConfirmButton: false,
+        allowOutsideClick:true
+      }).done();
+        $(".inputBox").off('click');
+    },
     showCurrentTurn:function(current){
       if(current==player2){
         $('#currentTurn').text("Player - 2's turn");
@@ -174,6 +202,7 @@ var controller = {
       $(".inputBox").text("");
       $(".msgIndicator").show();
       $(".options").removeClass("optionsFocus");
+      $(".inputBox").removeClass("winningRow");
     },
     removeAllClicks:function(){
       $(".inputBox").off();

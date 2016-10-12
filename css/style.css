@@ -40,6 +40,11 @@ body {
   user-select: none;
   /* Likely future */
 }
+.winningRow{
+  background-color:rgba(195, 0, 0, 0.3);;
+  color:#E6D3A7;
+
+}
 
 .msgIndicator{
   padding-top:10px;
@@ -71,8 +76,8 @@ body {
   line-height:0%;
   margin:15px;
   cursor:pointer;
-  
+
 }
-.optionsFocus,.options:focus,.options:hover{ 
+.optionsFocus,.options:focus,.options:hover{
     background-color: #D5D46F;
 }
