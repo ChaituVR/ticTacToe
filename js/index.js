@@ -10,8 +10,8 @@ var model = {
   computerSelection: "",
   currentTurn: "",
   winningModes:[[0,1,2],[3,4,5],[6,7,8],
-                    [0,3,6],[1,4,7],[2,5,8],
-                      [0,4,8],[2,4,6]],
+                  [0,3,6],[1,4,7],[2,5,8],
+                    [0,4,8],[2,4,6]],
   currentBoardState:defualtBoard,
   // actualBoard:function(){
   //   var  subarr=[],mainArr=[];
@@ -64,6 +64,7 @@ var controller = {
     if (model.userSelection != "a") {
       // model.userSelection == "o" ? model.currentTurn = "COMPUTER" : model.currentTurn = "USER";
       view.removeStartOptions();
+      controller.mainGame();
     } else {
       view.showErrorMsg('Please select one option');
     }
@@ -123,7 +124,34 @@ var controller = {
          model.WonBy="Player 2";
          view.showWinningStatus(model.WonBy+" Won!!!",model.WoninRow)
      }
-    }
+   },
+   mainGame(){
+     if (controller.getCurrentTurn() == player2) {
+
+       //play computer
+
+       controller.playComputer();
+     } else if (controller.getCurrentTurn() == player1) {
+
+     }
+   },getEmptyPlaces(){
+     var curr_board=model.currentBoardState;
+     var temp=[];
+     for(var i in curr_board){
+       if(curr_board[i]===""){ temp.push(parseInt(i)); }
+     }
+    return temp;
+   },playComputer(){
+     var empty=controller.getEmptyPlaces();
+     var random=empty[Math.floor(Math.random()*empty.length)];
+     $(".inputBox:eq("+random+")").trigger('click');
+    //  console.log(model.currentBoardState)
+     empty=controller.getEmptyPlaces()
+    //  console.log(empty);
+   },
+   arInterligence(){
+
+   }
 
 
   };
@@ -139,7 +167,7 @@ var controller = {
         $(this).addClass("optionsFocus");
         controller.updateUserSelection(this.value);
         view.showCurrentTurn(controller.getCurrentTurn());
-
+        // controller.mainGame();
       });
     },
     loadUserClicks: function() {
@@ -150,6 +178,7 @@ var controller = {
          } else if (controller.getCurrentTurn() == player1) {
            $(this).text(model.userSelection);
            model.currentBoardState[$(".inputBox").index(this)]=0
+
          }
 
         controller.winningStatus();
@@ -157,7 +186,7 @@ var controller = {
         // console.log(controller.getCurrentTurn());
         $(this).off('click');
         controller.alternateCurrentTurn();
-
+        controller.mainGame();
       });
     },
     showWinningStatus:function(winningStatustext,WoninRow){
