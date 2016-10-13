@@ -10,8 +10,8 @@ var model = {
   computerSelection: "",
   currentTurn: "",
   winningModes:[[0,1,2],[3,4,5],[6,7,8],
-                  [0,3,6],[1,4,7],[2,5,8],
-                    [0,4,8],[2,4,6]],
+  [0,3,6],[1,4,7],[2,5,8],
+  [0,4,8],[2,4,6]],
   currentBoardState:defualtBoard,
   // actualBoard:function(){
   //   var  subarr=[],mainArr=[];
@@ -24,10 +24,10 @@ var model = {
   winningScenarios:function(){
     var  subarr=[],mainArr=[];
     //for vertical
-      for(var k in this.winningModes){
-        var p = this.winningModes[k];
-        mainArr.push([this.currentBoardState[p[0]],this.currentBoardState[p[1]],this.currentBoardState[p[2]]]);
-      }
+    for(var k in this.winningModes){
+      var p = this.winningModes[k];
+      mainArr.push([this.currentBoardState[p[0]],this.currentBoardState[p[1]],this.currentBoardState[p[2]]]);
+    }
 
     // for (var i = 0; i < this.currentBoardState.length; i++) {
     //   subarr.push(this.currentBoardState[i]);
@@ -114,44 +114,55 @@ var controller = {
       }
     },
     winningStatus:function(){
-     if(this.checkForplayerOne()){
-       model.WonBy="Player 1";
-       view.showWinningStatus(model.WonBy+" Won!!!",model.WoninRow)
-       //console.log("WON IT!!!! "+model.WonBy+" in "+ model.WoninRow);
+      if(this.checkForplayerOne()){
+        model.WonBy="Player 1";
+        view.showWinningStatus(model.WonBy+" Won!!!",model.WoninRow)
+        //console.log("WON IT!!!! "+model.WonBy+" in "+ model.WoninRow);
 
-     }
-     else if(this.checkForplayerTwo()){
-         model.WonBy="Player 2";
-         view.showWinningStatus(model.WonBy+" Won!!!",model.WoninRow)
-     }
-   },
-   mainGame(){
-     if (controller.getCurrentTurn() == player2) {
+      }
+      else if(this.checkForplayerTwo()){
+        model.WonBy="Player 2";
+        view.showWinningStatus(model.WonBy+" Won!!!",model.WoninRow)
+      }
+    },
+    mainGame(){
+      if (controller.getCurrentTurn() == player2) {
 
-       //play computer
+        //play computer
 
-       controller.playComputer();
-     } else if (controller.getCurrentTurn() == player1) {
+        controller.playComputer();
+      } else if (controller.getCurrentTurn() == player1) {
 
-     }
-   },getEmptyPlaces(){
-     var curr_board=model.currentBoardState;
-     var temp=[];
-     for(var i in curr_board){
-       if(curr_board[i]===""){ temp.push(parseInt(i)); }
-     }
-    return temp;
-   },playComputer(){
-     var empty=controller.getEmptyPlaces();
-     var random=empty[Math.floor(Math.random()*empty.length)];
-     $(".inputBox:eq("+random+")").trigger('click');
-    //  console.log(model.currentBoardState)
-     empty=controller.getEmptyPlaces()
-    //  console.log(empty);
-   },
-   arInterligence(){
+      }
+    },getEmptyPlaces(){
+      var curr_board=model.currentBoardState;
+      var temp=[];
+      for(var i in curr_board){
+        if(curr_board[i]===""){ temp.push(parseInt(i)); }
+      }
+      return temp;
+    },playComputer(){
+      var empty=controller.getEmptyPlaces();
+      if(empty.length == 9){
+        var random=empty[Math.floor(Math.random()*empty.length)];
+        $(".inputBox:eq("+random+")").trigger('click');
+        //  console.log(model.currentBoardState)
+        //empty=controller.getEmptyPlaces()
+      }
+      else{
+        var computerGenerated=this.minmax(empty);
+        console.log(computerGenerated);
+        $(".inputBox:eq("+computerGenerated+")").trigger('click');
+        //  console.log(model.currentBoardState)
 
-   }
+      }
+
+      //  console.log(empty);
+    },
+    minmax(emptyVals){
+      var random=emptyVals[Math.floor(Math.random()*emptyVals.length)];
+      return random;
+    }
 
 
   };
@@ -172,14 +183,14 @@ var controller = {
     },
     loadUserClicks: function() {
       $(".inputBox").click(function() {
-         if (controller.getCurrentTurn() == player2) {
-           $(this).text(model.computerSelection);
-           model.currentBoardState[$(".inputBox").index(this)]=1
-         } else if (controller.getCurrentTurn() == player1) {
-           $(this).text(model.userSelection);
-           model.currentBoardState[$(".inputBox").index(this)]=0
+        if (controller.getCurrentTurn() == player2) {
+          $(this).text(model.computerSelection);
+          model.currentBoardState[$(".inputBox").index(this)]=1
+        } else if (controller.getCurrentTurn() == player1) {
+          $(this).text(model.userSelection);
+          model.currentBoardState[$(".inputBox").index(this)]=0
 
-         }
+        }
 
         controller.winningStatus();
         controller.getCurrentTurn()==player2 ? view.showCurrentTurn(player1) : view.showCurrentTurn(player2);
@@ -204,7 +215,7 @@ var controller = {
         showConfirmButton: false,
         allowOutsideClick:true
       }).done();
-        $(".inputBox").off('click');
+      $(".inputBox").off('click');
     },
     showCurrentTurn:function(current){
       if(current==player2){
