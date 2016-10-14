@@ -1,83 +1,87 @@
-html,
-body {
-  background: #E6D3A7;
-  text-align: center;
-  color: #392F2F;
-  font-family: 'Roboto', sans-serif;
+html, body {
+    background: #E6D3A7;
+    text-align: center;
+    color: #392F2F;
+    font-family: 'Roboto', sans-serif;
 }
 
 #board {
-  background: #3A7563;
-  border: 10px solid #392F2F;
-  border-radius: 2%;
-  width: 350px;
-  height: 350px;
-  margin: 0 auto;
+    background: #3A7563;
+    border: 10px solid #392F2F;
+    border-radius: 2%;
+    width: 350px;
+    height: 350px;
+    margin: 0 auto;
 }
-.innerShadow{
-  position:absolute;
-  margin:2px;
-  border:10px solid #E6D3A7;
-  width:326px;
-  height:327px;
-  pointer-events: none;
+
+.innerShadow {
+    position: absolute;
+    margin: 2px;
+    border: 10px solid #E6D3A7;
+    width: 326px;
+    height: 327px;
+    pointer-events: none;
 }
+
 .inputBox {
-  float:left;
-  background: #E6D3A7;
-  border: 2px solid #3A7563;
-  width: 112.6px;
-  height: 113px;
-  font-size: 8em;
-  line-height: 75%;
-  cursor:pointer;
-  -webkit-user-select: none;
-  /* Chrome all / Safari all */
-  -moz-user-select: none;
-  /* Firefox all */
-  -ms-user-select: none;
-  /* IE 10+ */
-  user-select: none;
-  /* Likely future */
-}
-.winningRow{
-  background-color:rgba(195, 0, 0, 0.3);;
-  color:#E6D3A7;
-
+    float: left;
+    background: #E6D3A7;
+    border: 2px solid #3A7563;
+    width: 112.6px;
+    height: 113px;
+    font-size: 8em;
+    line-height: 75%;
+    cursor: pointer;
+    -webkit-user-select: none;
+    /* Chrome all / Safari all */
+    -moz-user-select: none;
+    /* Firefox all */
+    -ms-user-select: none;
+    /* IE 10+ */
+    user-select: none;
+    /* Likely future */
 }
 
-.msgIndicator{
-  padding-top:10px;
-  background-color: rgba(0, 0, 0, 0.8);
-  color:white;
-  position:absolute;
-  margin:2px;
-/*   border:5px solid ; */
- width: 346px;
-  height: 337px;
+.winningRow {
+    background-color: rgba(195, 0, 0, 0.3);
+    ;
+    color: #E6D3A7;
 }
-.msgIndicator .startGame{
-  outline-style:none;
-  position:relative;
-  margin-top:5px;
-  border:2px solid;
-  background:#D5D46F;
-  font-size:1.2em;
-  width:100px;
-  height:40px;
-  cursor:pointer;
-}
-.options{
-  background:#59A985;
-  border:5px solid;
-  width:90px;
-  height:90px;
-  font-size:5em;
-  line-height:0%;
-  margin:15px;
-  cursor:pointer;
 
+.msgIndicator {
+    padding-top: 10px;
+    background-color: rgba(0, 0, 0, 0.8);
+    color: white;
+    position: absolute;
+    margin: 2px;
+    /*   border:5px solid ; */
+    width: 346px;
+    height: 337px;
 }
-.optionsFocus,.options:focus,.options:hover{
+
+.msgIndicator .startGame {
+    outline-style: none;
+    position: relative;
+    margin-top: 5px;
+    border: 2px solid;
+    background: #D5D46F;
+    font-size: 1.2em;
+    width: 100px;
+    height: 40px;
+    cursor: pointer;
+}
+
+.options {
+    background: #59A985;
+    border: 5px solid;
+    width: 90px;
+    height: 90px;
+    font-size: 5em;
+    line-height: 0%;
+    margin: 15px;
+    cursor: pointer;
+}
+
+.optionsFocus, .options:focus, .options:hover {
     background-color: #D5D46F;
 }
