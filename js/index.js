@@ -20,13 +20,14 @@ var model = {
         [2, 4, 6]
     ],
     currentBoardState: defualtBoard,
-    winningScenarios: function() {
+    winningScenarios: function(board) {
         var subarr = [],
             mainArr = [];
         //for vertical
         for (var k in this.winningModes) {
             var p = this.winningModes[k];
-            mainArr.push([this.currentBoardState[p[0]], this.currentBoardState[p[1]], this.currentBoardState[p[2]]]);
+            mainArr.push([board[p[0]], board[p[1]], board[p[2]]]);
+            //mainArr.push([this.currentBoardState[p[0]], this.currentBoardState[p[1]], this.currentBoardState[p[2]]]);
         }
 
         // for (var i = 0; i < this.currentBoardState.length; i++) {
@@ -97,8 +98,8 @@ var controller = {
         });
         return Won;
     },
-    checkForplayerOne: function() {
-        var board = model.winningScenarios();
+    checkForplayerOne: function(currentBoard) {
+        var board = model.winningScenarios(currentBoard);
         for (var a = 0; a < board.length; a++) {
             if (this.allValuesSame(board[a], 0)) {
                 model.WoninRow = a;
@@ -106,8 +107,8 @@ var controller = {
             }
         }
     },
-    checkForplayerTwo: function() {
-        var board = model.winningScenarios();
+    checkForplayerTwo: function(currentBoard) {
+        var board = model.winningScenarios(currentBoard);
         for (var a = 0; a < board.length; a++) {
             if (this.allValuesSame(board[a], 1)) {
                 model.WoninRow = a;
@@ -116,25 +117,33 @@ var controller = {
         }
     },
     winningStatus: function() {
-        if (this.checkForplayerOne()) {
+        if (this.checkForplayerOne(model.currentBoardState)) {
             model.WonBy = "Player 1";
             view.showWinningStatus(model.WonBy + " Won!!!", model.WoninRow)
                 //console.log("WON IT!!!! "+model.WonBy+" in "+ model.WoninRow);
 
-        } else if (this.checkForplayerTwo()) {
+        } else if (this.checkForplayerTwo(model.currentBoardState)) {
             model.WonBy = "Player 2";
             view.showWinningStatus(model.WonBy + " Won!!!", model.WoninRow)
         }
     },
+    computerCheckForWinning(){
+      if (this.checkForplayerOne()) {
+
+              //console.log("WON IT!!!! "+model.WonBy+" in "+ model.WoninRow);
+
+      } else if (this.checkForplayerTwo()) {
+
+      }
+    },
     mainGame() {
         if (controller.getCurrentTurn() == player2) {
-
             //play computer
-
             controller.playComputer();
-        } else if (controller.getCurrentTurn() == player1) {
-
         }
+        // else if (controller.getCurrentTurn() == player1) {
+        //
+        // }
     },
     getEmptyPlaces() {
         var curr_board = model.currentBoardState;
@@ -151,19 +160,25 @@ var controller = {
         if (empty.length == 9) {
             var random = empty[Math.floor(Math.random() * empty.length)];
             $(".inputBox:eq(" + random + ")").trigger('click');
-            //  console.log(model.currentBoardState)
-            //empty=controller.getEmptyPlaces()
         } else {
             var computerGenerated = this.minmax(empty);
             console.log(computerGenerated);
             $(".inputBox:eq(" + computerGenerated + ")").trigger('click');
-            //  console.log(model.currentBoardState)
-
         }
-
-        //  console.log(empty);
     },
     minmax(emptyVals) {
+        var currentBoardStateforComputer= model.currentBoardState;
+        // console.log(currentBoardStateforComputer);
+        // console.log(emptyVals);
+        for(var a in emptyVals){
+          console.log(currentBoardStateforComputer);
+          console.log(model.currentBoardState);
+          var b = emptyVals[a];
+          // currentBoardStateforComputer[b]=1;
+          // currentBoardStateforComputer[emptyVals[a]] = 1;
+          // this.computerCheckForWinning()
+        }
+
         var random = emptyVals[Math.floor(Math.random() * emptyVals.length)];
         return random;
     }
