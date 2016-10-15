@@ -76,7 +76,7 @@ var controller = {
         currentValue == "o" ? model.computerSelection = "x" : model.computerSelection = "o";
         currentValue == "x" ? model.currentTurn = player1 : model.currentTurn = player2;
     },
-    alternateCurrentTurn: function() {
+      alternateCurrentTurn: function() {
         model.currentTurn == player2 ? model.currentTurn = player1 : model.currentTurn = player2;
     },
     getCurrentTurn: function() {
@@ -120,11 +120,13 @@ var controller = {
         if (this.checkForplayerOne(model.currentBoardState)) {
             model.WonBy = "Player 1";
             view.showWinningStatus(model.WonBy + " Won!!!", model.WoninRow)
-                //console.log("WON IT!!!! "+model.WonBy+" in "+ model.WoninRow);
+                console.log("WON IT!!!! "+model.WonBy+" in "+ model.WoninRow);
 
         } else if (this.checkForplayerTwo(model.currentBoardState)) {
             model.WonBy = "Player 2";
             view.showWinningStatus(model.WonBy + " Won!!!", model.WoninRow)
+             console.log(model.currentBoardState);
+              console.log("WON IT!!!! "+model.WonBy+" in "+ model.WoninRow);
         }
     },
     computerCheckForWinning(){
@@ -146,7 +148,7 @@ var controller = {
         // }
     },
     getEmptyPlaces() {
-        var curr_board = model.currentBoardState;
+        var curr_board = JSON.parse(JSON.stringify(model.currentBoardState));
         var temp = [];
         for (var i in curr_board) {
             if (curr_board[i] === "") {
@@ -162,19 +164,21 @@ var controller = {
             $(".inputBox:eq(" + random + ")").trigger('click');
         } else {
             var computerGenerated = this.minmax(empty);
-            console.log(computerGenerated);
+            // console.log(computerGenerated);
             $(".inputBox:eq(" + computerGenerated + ")").trigger('click');
         }
     },
     minmax(emptyVals) {
-        var currentBoardStateforComputer= model.currentBoardState;
+        var currentBoardStateforComputer =[];
+        currentBoardStateforComputer= JSON.parse(JSON.stringify(model.currentBoardState));
         // console.log(currentBoardStateforComputer);
         // console.log(emptyVals);
         for(var a in emptyVals){
           console.log(currentBoardStateforComputer);
-          console.log(model.currentBoardState);
+          // console.log(model.currentBoardState);
           var b = emptyVals[a];
-          // currentBoardStateforComputer[b]=1;
+          currentBoardStateforComputer[b]=1;
+          console.log(currentBoardStateforComputer);
           // currentBoardStateforComputer[emptyVals[a]] = 1;
           // this.computerCheckForWinning()
         }
