@@ -98,20 +98,24 @@ var controller = {
         });
         return Won;
     },
-    checkForplayerOne: function(currentBoard) {
+    checkForplayerOne: function(currentBoard,computerCheck) {
         var board = model.winningScenarios(currentBoard);
         for (var a = 0; a < board.length; a++) {
             if (this.allValuesSame(board[a], 0)) {
+              if(computerCheck=== undefined){
                 model.WoninRow = a;
+              }
                 return true;
             }
         }
     },
-    checkForplayerTwo: function(currentBoard) {
+    checkForplayerTwo: function(currentBoard,computerCheck) {
         var board = model.winningScenarios(currentBoard);
         for (var a = 0; a < board.length; a++) {
             if (this.allValuesSame(board[a], 1)) {
+              if(computerCheck=== undefined){
                 model.WoninRow = a;
+              }
                 return true;
             }
         }
@@ -129,26 +133,25 @@ var controller = {
               console.log("WON IT!!!! "+model.WonBy+" in "+ model.WoninRow);
         }
     },
-    computerCheckForWinning(){
-      if (this.checkForplayerOne()) {
+    computerCheckForWinning(currentBoardStateforComputer){
+      if (this.checkForplayerOne(currentBoardStateforComputer,true)) {
+        return "playerOne";
 
-              //console.log("WON IT!!!! "+model.WonBy+" in "+ model.WoninRow);
-
-      } else if (this.checkForplayerTwo()) {
+      } else if (this.checkForplayerTwo(currentBoardStateforComputer,true)) {
+        return "playerTwo";
 
       }
     },
     mainGame() {
         if (controller.getCurrentTurn() == player2) {
-            //play computer
             controller.playComputer();
         }
         // else if (controller.getCurrentTurn() == player1) {
         //
         // }
     },
-    getEmptyPlaces() {
-        var curr_board = JSON.parse(JSON.stringify(model.currentBoardState));
+    getEmptyPlaces(board) {
+        var curr_board = JSON.parse(JSON.stringify(board));
         var temp = [];
         for (var i in curr_board) {
             if (curr_board[i] === "") {
@@ -158,7 +161,7 @@ var controller = {
         return temp;
     },
     playComputer() {
-        var empty = controller.getEmptyPlaces();
+        var empty = controller.getEmptyPlaces(model.currentBoardState);
         if (empty.length == 9) {
             var random = empty[Math.floor(Math.random() * empty.length)];
             $(".inputBox:eq(" + random + ")").trigger('click');
@@ -171,17 +174,48 @@ var controller = {
     minmax(emptyVals) {
         var currentBoardStateforComputer =[];
         currentBoardStateforComputer= JSON.parse(JSON.stringify(model.currentBoardState));
-        // console.log(currentBoardStateforComputer);
+        console.log(currentBoardStateforComputer);
         // console.log(emptyVals);
-        for(var a in emptyVals){
-          console.log(currentBoardStateforComputer);
-          // console.log(model.currentBoardState);
-          var b = emptyVals[a];
-          currentBoardStateforComputer[b]=1;
-          console.log(currentBoardStateforComputer);
-          // currentBoardStateforComputer[emptyVals[a]] = 1;
-          // this.computerCheckForWinning()
+        var decisionObject={};
+        var localTurn = 1;
+        var score=0;
+        function endState(currentBoardStateforComputer){
+          if(controller.computerCheckForWinning(currentBoardStateforComputer)){
+            return true;
+          }
+          else{
+            return false;
+          }
         }
+        function recursionOfBoard(currentBoardStateforComputer,emptyVals,localTurn){
+
+          for(var a in emptyVals){
+            var b = emptyVals[a];
+            var innerCurrentBoard=JSON.parse(JSON.stringify(currentBoardStateforComputer));
+            innerCurrentBoard[b]=localTurn;
+            var innerEmpty =controller.getEmptyPlaces(innerCurrentBoard);
+
+            // localTurn==1?localTurn=0:localTurn=1;
+            // console.log(localTurn);
+            // console.log(a);
+            // console.log(innerCurrentBoard);
+            if(!endState(innerCurrentBoard ) && innerEmpty.length>0){
+              // console.log("new");
+
+              recursionOfBoard(innerCurrentBoard,innerEmpty,localTurn==1? 0:1);
+            }
+            else{
+              // localTurn=1;
+              // console.log("Winning !! ");
+            }
+            // console.log(endState(innerCurrentBoard));
+              // return currentBoardStateforComputer;
+            // localTurn==1?localTurn=0:localTurn=1;
+          }
+
+        }
+        recursionOfBoard(currentBoardStateforComputer,emptyVals,localTurn);
+
 
         var random = emptyVals[Math.floor(Math.random() * emptyVals.length)];
         return random;
