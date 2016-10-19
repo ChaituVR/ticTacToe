@@ -129,7 +129,7 @@ var controller = {
         } else if (this.checkForplayerTwo(model.currentBoardState)) {
             model.WonBy = "Player 2";
             view.showWinningStatus(model.WonBy + " Won!!!", model.WoninRow)
-             console.log(model.currentBoardState);
+            //  console.log(model.currentBoardState);
               console.log("WON IT!!!! "+model.WonBy+" in "+ model.WoninRow);
         }
     },
@@ -175,8 +175,6 @@ var controller = {
         var currentBoardStateforComputer =[];
         currentBoardStateforComputer= JSON.parse(JSON.stringify(model.currentBoardState));
         console.log(currentBoardStateforComputer);
-        // console.log(emptyVals);
-        var decisionObject={};
         var localTurn = 1;
 
         var waef=0;
@@ -188,10 +186,10 @@ var controller = {
             return false;
           }
         }
-        function recursionOfBoard(currentBoardStateforComputer,emptyVals,localTurn){
+        function recursionOfBoard(currentBoardStateforComputer,emptyVals,localTurn,stepsCount){
           var score=0;
           var scoreBoard=[];
-          for(var v in currentBoardStateforComputer){
+          for(var v in emptyVals){
             scoreBoard[v]=0;
           }
           for(var a in emptyVals){
@@ -203,74 +201,50 @@ var controller = {
             // localTurn==1?localTurn=0:localTurn=1;
             // console.log(localTurn);
             // console.log(a);
-            // console.log((JSON.stringify(innerCurrentBoard)));
+            console.log((JSON.stringify(innerCurrentBoard)));
             var ended=endState( innerCurrentBoard );
             if(!ended && innerEmpty.length>0){
-              // console.log("new");
+              console.log("new");
               if(localTurn == 1){
               //             console.log("CURRENT BOARD");
               // console.log(currentBoardStateforComputer);
               // console.log("SCOREBOARD");
               //             console.log(scoreBoard)
               //             console.log(Math.max.apply(null,scoreBoard))
-                scoreBoard[b]=  Math.max.apply(null,recursionOfBoard(innerCurrentBoard,innerEmpty,localTurn==1? 0:1));
+                scoreBoard[a]= Math.max.apply(null,recursionOfBoard(innerCurrentBoard,innerEmpty,localTurn==1? 0:1,stepsCount+1));
+
               }
               else if(localTurn == 0){
-                  scoreBoard[b]= Math.min.apply(null,recursionOfBoard(innerCurrentBoard,innerEmpty,localTurn==1? 0:1));
-
-
+                  scoreBoard[a]=Math.min.apply(null,recursionOfBoard(innerCurrentBoard,innerEmpty,localTurn==1? 0:1,stepsCount+1));
               }
-              // scoreBoard[b]=recursionOfBoard(innerCurrentBoard,innerEmpty,localTurn==1? 0:1);
-
             }
             else{
               if(ended && localTurn == 1){
-                scoreBoard[b]=10;
+                scoreBoard[a]=10;
               }
               else if(ended && localTurn == 0){
-                scoreBoard[b]=-10;
+                scoreBoard[a]=stepsCount -10;
               }
               else if (innerEmpty.length == 0){
-                scoreBoard[b] = 0;
+                scoreBoard[a] = 0;
               }
-              // console.log(JSON.stringify(scoreBoard));
-              // console.log()
-              // localTurn=1;
-              // console.log("Winning !! ");
             }
-            // console.log(endState(innerCurrentBoard));
-              // return currentBoardStateforComputer;
-            // localTurn==1?localTurn=0:localTurn=1;
           }
-
-          // if(localTurn == 1){
-// //             console.log("CURRENT BOARD");
-// // console.log(currentBoardStateforComputer);
-// // console.log("SCOREBOARD");
-// //             console.log(scoreBoard)
-// //             console.log(Math.max.apply(null,scoreBoard))
-//             return Math.max.apply(null,scoreBoard);
-          // }
-          // else if(localTurn == 0){
-
-//               return Math.min.apply(null,scoreBoard);
-          // }
-// console.log(scoreBoard);
           return scoreBoard;
 
         }
-        var deBoard=recursionOfBoard(currentBoardStateforComputer,emptyVals,localTurn);
+        var deBoard=recursionOfBoard(currentBoardStateforComputer,emptyVals,localTurn,0);
         var putitin=Math.max.apply(null,deBoard);
-        if(putitin==0){
-          var random = emptyVals[Math.floor(Math.random() * emptyVals.length)];
-        }else{
+        // if(putitin==0){
+        //   var random = emptyVals[Math.floor(Math.random() * emptyVals.length)];
+        // }else{
             var random = deBoard.indexOf(putitin) ;
 
-        }
+        // }
         console.log(deBoard);
-        console.log(putitin);
-console.log(random);
-        return random;
+//         console.log(putitin);
+console.log(emptyVals[random]);
+        return emptyVals[random];
     }
 
 
