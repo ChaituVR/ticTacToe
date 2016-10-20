@@ -27,19 +27,8 @@ var model = {
         for (var k in this.winningModes) {
             var p = this.winningModes[k];
             mainArr.push([board[p[0]], board[p[1]], board[p[2]]]);
-            //mainArr.push([this.currentBoardState[p[0]], this.currentBoardState[p[1]], this.currentBoardState[p[2]]]);
         }
 
-        // for (var i = 0; i < this.currentBoardState.length; i++) {
-        //   subarr.push(this.currentBoardState[i]);
-        //   if(subarr.length==3){mainArr.push(subarr); subarr=[];}
-        // }
-        // //for horizontal
-        // mainArr.push([this.currentBoardState[0],this.currentBoardState[3],this.currentBoardState[6]]);
-        // mainArr.push([this.currentBoardState[1],this.currentBoardState[4],this.currentBoardState[7]]);
-        // mainArr.push([this.currentBoardState[2],this.currentBoardState[5],this.currentBoardState[8]]);
-        // mainArr.push([this.currentBoardState[0],this.currentBoardState[4],this.currentBoardState[8]]);
-        // mainArr.push([this.currentBoardState[2],this.currentBoardState[4],this.currentBoardState[6]]);
         return mainArr;
     },
     WonBy: null,
@@ -63,7 +52,6 @@ var controller = {
     },
     startGame: function() {
         if (model.userSelection != "a") {
-            // model.userSelection == "o" ? model.currentTurn = "COMPUTER" : model.currentTurn = "USER";
             view.removeStartOptions();
             controller.mainGame();
         } else {
@@ -190,7 +178,7 @@ var controller = {
           var score=0;
           var scoreBoard=[];
           for(var v in emptyVals){
-            scoreBoard[v]=0;
+            // scoreBoard[v]=0;
           }
           for(var a in emptyVals){
             var b = emptyVals[a];
@@ -201,21 +189,21 @@ var controller = {
             // localTurn==1?localTurn=0:localTurn=1;
             // console.log(localTurn);
             // console.log(a);
-            console.log((JSON.stringify(innerCurrentBoard)));
+            // console.log((JSON.stringify(innerCurrentBoard)));
             var ended=endState( innerCurrentBoard );
             if(!ended && innerEmpty.length>0){
-              console.log("new");
+              // console.log("new");
               if(localTurn == 1){
               //             console.log("CURRENT BOARD");
               // console.log(currentBoardStateforComputer);
               // console.log("SCOREBOARD");
               //             console.log(scoreBoard)
               //             console.log(Math.max.apply(null,scoreBoard))
-                scoreBoard[a]= Math.max.apply(null,recursionOfBoard(innerCurrentBoard,innerEmpty,localTurn==1? 0:1,stepsCount+1));
+                scoreBoard[a]= Math.min.apply(null,recursionOfBoard(innerCurrentBoard,innerEmpty,localTurn==1? 0:1,stepsCount+1));
 
               }
               else if(localTurn == 0){
-                  scoreBoard[a]=Math.min.apply(null,recursionOfBoard(innerCurrentBoard,innerEmpty,localTurn==1? 0:1,stepsCount+1));
+                  scoreBoard[a]=Math.max.apply(null,recursionOfBoard(innerCurrentBoard,innerEmpty,localTurn==1? 0:1,stepsCount+1));
               }
             }
             else{
