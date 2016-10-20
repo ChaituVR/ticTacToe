@@ -1,9 +1,8 @@
 $(document).ready(function() {
     controller.init();
 });
-var player1 = "USER";
-var player2 = "COMPUTER";
-// var defualtBoard={0:"",1:"",2:"",3:"",4:"",5:"",6:"",7:"",8:""};
+var player1 = "Player - 1";
+var player2 = "Computer";
 var defualtBoard = ["", "", "", "", "", "", "", "", ""];
 var model = {
     userSelection: "",
@@ -13,11 +12,11 @@ var model = {
         [0, 1, 2],
         [3, 4, 5],
         [6, 7, 8],
-        [0, 3, 6],
-        [1, 4, 7],
-        [2, 5, 8],
-        [0, 4, 8],
-        [2, 4, 6]
+                    [0, 3, 6],
+                    [1, 4, 7],
+                    [2, 5, 8],
+                                [0, 4, 8],
+                                [2, 4, 6]
     ],
     currentBoardState: defualtBoard,
     winningScenarios: function(board) {
@@ -32,8 +31,7 @@ var model = {
         return mainArr;
     },
     WonBy: null,
-    WoninRow: null,
-    status: "playing"
+    WoninRow: null
 };
 
 var controller = {
@@ -43,7 +41,7 @@ var controller = {
     newGameState: function() {
         model.userSelection = "a";
         model.computerSelection = "a";
-        model.currentBoardState = ["", "", "", "", "", "", "", "", ""];
+        model.currentBoardState = defualtBoard;
         view.removeAllClicks();
         view.loadUserClicks();
         view.loadOptionsClicks();
@@ -64,7 +62,7 @@ var controller = {
         currentValue == "o" ? model.computerSelection = "x" : model.computerSelection = "o";
         currentValue == "x" ? model.currentTurn = player1 : model.currentTurn = player2;
     },
-      alternateCurrentTurn: function() {
+    alternateCurrentTurn: function() {
         model.currentTurn == player2 ? model.currentTurn = player1 : model.currentTurn = player2;
     },
     getCurrentTurn: function() {
@@ -86,57 +84,50 @@ var controller = {
         });
         return Won;
     },
-    checkForplayerOne: function(currentBoard,computerCheck) {
+    checkForplayerOne: function(currentBoard, computerCheck) {
         var board = model.winningScenarios(currentBoard);
         for (var a = 0; a < board.length; a++) {
             if (this.allValuesSame(board[a], 0)) {
-              if(computerCheck=== undefined){
-                model.WoninRow = a;
-              }
+                if (computerCheck === undefined) {
+                    model.WoninRow = a;
+                }
                 return true;
             }
         }
     },
-    checkForplayerTwo: function(currentBoard,computerCheck) {
+    checkForplayerTwo: function(currentBoard, computerCheck) {
         var board = model.winningScenarios(currentBoard);
         for (var a = 0; a < board.length; a++) {
             if (this.allValuesSame(board[a], 1)) {
-              if(computerCheck=== undefined){
-                model.WoninRow = a;
-              }
+                if (computerCheck === undefined) {
+                    model.WoninRow = a;
+                }
                 return true;
             }
         }
     },
     winningStatus: function() {
         if (this.checkForplayerOne(model.currentBoardState)) {
-            model.WonBy = "Player 1";
+            model.WonBy = player1;
             view.showWinningStatus(model.WonBy + " Won!!!", model.WoninRow)
-                console.log("WON IT!!!! "+model.WonBy+" in "+ model.WoninRow);
-
         } else if (this.checkForplayerTwo(model.currentBoardState)) {
-            model.WonBy = "Player 2";
+            model.WonBy = player2;
             view.showWinningStatus(model.WonBy + " Won!!!", model.WoninRow)
-            //  console.log(model.currentBoardState);
-              console.log("WON IT!!!! "+model.WonBy+" in "+ model.WoninRow);
         }
     },
-    computerCheckForWinning(currentBoardStateforComputer){
-      if (this.checkForplayerOne(currentBoardStateforComputer,true)) {
-        return "playerOne";
+    computerCheckForWinning(currentBoardStateforComputer) {
+        if (this.checkForplayerOne(currentBoardStateforComputer, true)) {
+            return "playerOne";
 
-      } else if (this.checkForplayerTwo(currentBoardStateforComputer,true)) {
-        return "playerTwo";
+        } else if (this.checkForplayerTwo(currentBoardStateforComputer, true)) {
+            return "playerTwo";
 
-      }
+        }
     },
     mainGame() {
         if (controller.getCurrentTurn() == player2) {
             controller.playComputer();
         }
-        // else if (controller.getCurrentTurn() == player1) {
-        //
-        // }
     },
     getEmptyPlaces(board) {
         var curr_board = JSON.parse(JSON.stringify(board));
@@ -155,87 +146,49 @@ var controller = {
             $(".inputBox:eq(" + random + ")").trigger('click');
         } else {
             var computerGenerated = this.minmax(empty);
-            // console.log(computerGenerated);
             $(".inputBox:eq(" + computerGenerated + ")").trigger('click');
         }
     },
     minmax(emptyVals) {
-        var currentBoardStateforComputer =[];
-        currentBoardStateforComputer= JSON.parse(JSON.stringify(model.currentBoardState));
-        console.log(currentBoardStateforComputer);
+        var currentBoardStateforComputer = [];
+        currentBoardStateforComputer = JSON.parse(JSON.stringify(model.currentBoardState));
         var localTurn = 1;
-
-        var waef=0;
-        function endState(currentBoardStateforComputer){
-          if(controller.computerCheckForWinning(currentBoardStateforComputer)){
-            return true;
-          }
-          else{
-            return false;
-          }
+        function endState(currentBoardStateforComputer) {
+            return controller.computerCheckForWinning(currentBoardStateforComputer);
         }
-        function recursionOfBoard(currentBoardStateforComputer,emptyVals,localTurn,stepsCount){
-          var score=0;
-          var scoreBoard=[];
-          for(var v in emptyVals){
-            // scoreBoard[v]=0;
-          }
-          for(var a in emptyVals){
-            var b = emptyVals[a];
-            var innerCurrentBoard=JSON.parse(JSON.stringify(currentBoardStateforComputer));
-            innerCurrentBoard[b]=localTurn;
-            var innerEmpty =controller.getEmptyPlaces(innerCurrentBoard);
-
-            // localTurn==1?localTurn=0:localTurn=1;
-            // console.log(localTurn);
-            // console.log(a);
-            // console.log((JSON.stringify(innerCurrentBoard)));
-            var ended=endState( innerCurrentBoard );
-            if(!ended && innerEmpty.length>0){
-              // console.log("new");
-              if(localTurn == 1){
-              //             console.log("CURRENT BOARD");
-              // console.log(currentBoardStateforComputer);
-              // console.log("SCOREBOARD");
-              //             console.log(scoreBoard)
-              //             console.log(Math.max.apply(null,scoreBoard))
-                scoreBoard[a]= Math.min.apply(null,recursionOfBoard(innerCurrentBoard,innerEmpty,localTurn==1? 0:1,stepsCount+1));
-
-              }
-              else if(localTurn == 0){
-                  scoreBoard[a]=Math.max.apply(null,recursionOfBoard(innerCurrentBoard,innerEmpty,localTurn==1? 0:1,stepsCount+1));
-              }
+        function recursionOfBoard(currentBoardStateforComputer, emptyVals, localTurn, stepsCount) {
+            var scoreBoard = [];
+            for (var a in emptyVals) {
+                var b = emptyVals[a];
+                var innerCurrentBoard = JSON.parse(JSON.stringify(currentBoardStateforComputer));
+                innerCurrentBoard[b] = localTurn;
+                var innerEmpty = controller.getEmptyPlaces(innerCurrentBoard);
+                var ended = endState(innerCurrentBoard);
+                if (!ended && innerEmpty.length > 0) {
+                    if (localTurn == 1) {
+                        scoreBoard[a] =Math.min.apply(null, recursionOfBoard(innerCurrentBoard, innerEmpty, 0, stepsCount + 1));
+                    } else if (localTurn == 0) {
+                        scoreBoard[a] =Math.max.apply(null, recursionOfBoard(innerCurrentBoard, innerEmpty, 1, stepsCount + 1));
+                    }
+                } else {
+                    if (ended && localTurn == 1) {
+                        scoreBoard[a] = 10;
+                    } else if (ended && localTurn == 0) {
+                        scoreBoard[a] = -10;
+                    } else if (innerEmpty.length == 0) {
+                        scoreBoard[a] = 0;
+                    }
+                }
             }
-            else{
-              if(ended && localTurn == 1){
-                scoreBoard[a]=10;
-              }
-              else if(ended && localTurn == 0){
-                scoreBoard[a]=stepsCount -10;
-              }
-              else if (innerEmpty.length == 0){
-                scoreBoard[a] = 0;
-              }
-            }
-          }
-          return scoreBoard;
+            return scoreBoard;
 
         }
-        var deBoard=recursionOfBoard(currentBoardStateforComputer,emptyVals,localTurn,0);
-        var putitin=Math.max.apply(null,deBoard);
-        // if(putitin==0){
-        //   var random = emptyVals[Math.floor(Math.random() * emptyVals.length)];
-        // }else{
-            var random = deBoard.indexOf(putitin) ;
-
-        // }
+        var deBoard = recursionOfBoard(currentBoardStateforComputer, emptyVals, localTurn, 0);
         console.log(deBoard);
-//         console.log(putitin);
-console.log(emptyVals[random]);
-        return emptyVals[random];
+        var putitin = Math.max.apply(null, deBoard);
+        var selection = deBoard.indexOf(putitin);
+        return emptyVals[selection];
     }
-
-
 };
 
 var view = {
@@ -249,7 +202,6 @@ var view = {
             $(this).addClass("optionsFocus");
             controller.updateUserSelection(this.value);
             view.showCurrentTurn(controller.getCurrentTurn());
-            // controller.mainGame();
         });
     },
     loadUserClicks: function() {
@@ -260,12 +212,10 @@ var view = {
             } else if (controller.getCurrentTurn() == player1) {
                 $(this).text(model.userSelection);
                 model.currentBoardState[$(".inputBox").index(this)] = 0
-
             }
 
             controller.winningStatus();
             controller.getCurrentTurn() == player2 ? view.showCurrentTurn(player1) : view.showCurrentTurn(player2);
-            // console.log(controller.getCurrentTurn());
             $(this).off('click');
             controller.alternateCurrentTurn();
             controller.mainGame();
@@ -278,7 +228,6 @@ var view = {
         }
         swal({
             title: winningStatustext,
-            // type: 'success',
             timer: 800,
             showConfirmButton: false,
             allowOutsideClick: true
@@ -287,9 +236,9 @@ var view = {
     },
     showCurrentTurn: function(current) {
         if (current == player2) {
-            $('#currentTurn').text("Player - 2's turn");
+            $('#currentTurn').text(player2+"'s turn");
         } else if (current == player1) {
-            $('#currentTurn').text("Player - 1's turn");
+            $('#currentTurn').text(player1+"'s turn");
         } else if (current == "") {
             $('#currentTurn').text("");
         }
