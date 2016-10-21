@@ -4,49 +4,55 @@ $(document).ready(function() {
 var player1 = "Player - 1";
 var player2 = "Computer";
 var defualtBoard = ["", "", "", "", "", "", "", "", ""];
+var winningModes = [
+    [0, 1, 2],
+    [3, 4, 5],
+    [6, 7, 8],
+                [0, 3, 6],
+                [1, 4, 7],
+                [2, 5, 8],
+                            [0, 4, 8],
+                            [2, 4, 6]
+];
+
 var model = {
     userSelection: "",
     computerSelection: "",
     currentTurn: "",
-    winningModes: [
-        [0, 1, 2],
-        [3, 4, 5],
-        [6, 7, 8],
-                    [0, 3, 6],
-                    [1, 4, 7],
-                    [2, 5, 8],
-                                [0, 4, 8],
-                                [2, 4, 6]
-    ],
     currentBoardState: defualtBoard,
-    winningScenarios: function(board) {
-        var subarr = [],
-            mainArr = [];
-        //for vertical
-        for (var k in this.winningModes) {
-            var p = this.winningModes[k];
-            mainArr.push([board[p[0]], board[p[1]], board[p[2]]]);
-        }
-
-        return mainArr;
-    },
     WonBy: null,
     WoninRow: null
 };
+
+var initialmodel =JSON.parse(JSON.stringify(model));
 
 var controller = {
     init: function() {
         this.newGameState();
     },
     newGameState: function() {
-        model.userSelection = "a";
-        model.computerSelection = "a";
-        model.currentBoardState = defualtBoard;
+        // model=initialmodel;
+        // model.userSelection = "a";
+        // model.computerSelection = "a";
+        // model.currentBoardState = defualtBoard;
+        model= initialmodel;
         view.removeAllClicks();
         view.loadUserClicks();
         view.loadOptionsClicks();
         view.changeToNewGame();
-        view.showCurrentTurn("")
+        view.showCurrentTurn("");
+
+    },
+    getWinningScenarios:function(board) {
+        var subarr = [],
+            mainArr = [];
+        //for vertical
+        for (var k in winningModes) {
+            var p = winningModes[k];
+            mainArr.push([board[p[0]], board[p[1]], board[p[2]]]);
+        }
+
+        return mainArr;
     },
     startGame: function() {
         if (model.userSelection != "a") {
@@ -85,7 +91,7 @@ var controller = {
         return Won;
     },
     checkForplayerOne: function(currentBoard, computerCheck) {
-        var board = model.winningScenarios(currentBoard);
+        var board = this.getWinningScenarios(currentBoard);
         for (var a = 0; a < board.length; a++) {
             if (this.allValuesSame(board[a], 0)) {
                 if (computerCheck === undefined) {
@@ -96,7 +102,7 @@ var controller = {
         }
     },
     checkForplayerTwo: function(currentBoard, computerCheck) {
-        var board = model.winningScenarios(currentBoard);
+        var board = this.getWinningScenarios(currentBoard);
         for (var a = 0; a < board.length; a++) {
             if (this.allValuesSame(board[a], 1)) {
                 if (computerCheck === undefined) {
@@ -222,16 +228,16 @@ var view = {
         });
     },
     showWinningStatus: function(winningStatustext, WoninRow) {
-        var winningRowIndexes = model.winningModes[WoninRow];
+        var winningRowIndexes = winningModes[WoninRow];
         for (var a = 0; a < winningRowIndexes.length; a++) {
             $(".inputBox:eq( " + winningRowIndexes[a] + " )").addClass("winningRow");
         }
-        swal({
-            title: winningStatustext,
-            timer: 800,
-            showConfirmButton: false,
-            allowOutsideClick: true
-        }).done();
+        // swal({
+        //     title: winningStatustext,
+        //     timer: 800,
+        //     showConfirmButton: false,
+        //     allowOutsideClick: true
+        // }).done();
         $(".inputBox").off('click');
     },
     showCurrentTurn: function(current) {
