@@ -85,7 +85,10 @@ html, body {
 .optionsFocus, .options:focus, .options:hover {
     background-color: #D5D46F;
 }
-
+.resetbtn{
+  width: 100px;
+  height:50px;
+}
 
 .playerOneStatus,.playerTwoStatus{
   margin:20px auto;

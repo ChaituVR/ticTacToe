@@ -16,10 +16,10 @@ var winningModes = [
 ];
 
 var model = {
-    userSelection: "",
+    userSelection: "a",
     computerSelection: "",
     currentTurn: "",
-    currentBoardState: defualtBoard,
+    currentBoardState: JSON.parse(JSON.stringify(defualtBoard)),
     WonBy: null,
     WoninRow: null,
     playerOneScores:0,
@@ -32,10 +32,6 @@ var controller = {
         this.newGameState();
     },
     newGameState: function() {
-        // model=initialmodel;
-        // model.userSelection = "a";
-        // model.computerSelection = "a";
-        // model.currentBoardState = defualtBoard;
         model= JSON.parse(initialmodel);
         view.removeAllClicks();
         view.loadUserClicks();
@@ -43,6 +39,19 @@ var controller = {
         view.changeToNewGame();
         view.showCurrentTurn("");
 
+    },
+    freshGame(){
+      model.userSelection == "x" ? model.currentTurn = player1 : model.currentTurn = player2;
+      view.removeAllClicks();
+      view.changeToFreshGame();
+      console.log("NEW GAME")
+      model.currentBoardState= JSON.parse(JSON.stringify(defualtBoard));
+      model.WonBy= null;
+      model.WoninRow=null;
+      // view.loadOptionsClicks();
+      // view.changeToNewGame();
+      view.showCurrentTurn(controller.getCurrentTurn());
+      view.loadUserClicks();
     },
     getWinningScenarios:function(board) {
         var subarr = [],
@@ -117,11 +126,15 @@ var controller = {
         if (this.checkForplayerOne(model.currentBoardState)) {
             model.WonBy = player1;
             model.playerOneScores++;
-            view.showWinningStatus(model.WonBy + " Won!!!", model.WoninRow,model.playerOneScores,model.playerTwoScores)
+            view.showWinningStatus(model.WonBy + " Won!!!", model.WoninRow,model.playerOneScores,model.playerTwoScores);
+            controller.freshGame();
+            return true;
         } else if (this.checkForplayerTwo(model.currentBoardState)) {
             model.WonBy = player2;
             model.playerTwoScores++;
-            view.showWinningStatus(model.WonBy + " Won!!!", model.WoninRow,model.playerOneScores,model.playerTwoScores)
+            view.showWinningStatus(model.WonBy + " Won!!!", model.WoninRow,model.playerOneScores,model.playerTwoScores);
+            controller.freshGame();
+            return true;
         }
     },
     computerCheckForWinning(currentBoardStateforComputer) {
@@ -165,7 +178,7 @@ var controller = {
                 });
               }
               $(".inputBox:eq(" + computerGenerated + ")").trigger('click');
-            },500);
+            },300);
         }
     },
     minmax(emptyVals) {
@@ -226,19 +239,6 @@ var view = {
     loadUserClicks: function() {
         $(".inputBox").click(function() {
           view.clickFunction($(this));
-        //     if (controller.getCurrentTurn() == player2) {
-        //         $(this).text(model.computerSelection);
-        //         model.currentBoardState[$(".inputBox").index(this)] = 1
-        //     } else if (controller.getCurrentTurn() == player1) {
-        //         $(this).text(model.userSelection);
-        //         model.currentBoardState[$(".inputBox").index(this)] = 0
-        //     }
-        //
-        //     controller.winningStatus();
-        //     controller.getCurrentTurn() == player2 ? view.showCurrentTurn(player1) : view.showCurrentTurn(player2);
-        //     $(this).off('click');
-        //     controller.alternateCurrentTurn();
-        //     controller.mainGame();
        });
     },
     clickFunction(clickedElement){
@@ -250,11 +250,15 @@ var view = {
               model.currentBoardState[$(".inputBox").index(clickedElement)] = 0
           }
 
-          controller.winningStatus();
-          controller.getCurrentTurn() == player2 ? view.showCurrentTurn(player1) : view.showCurrentTurn(player2);
-          clickedElement.off('click');
-          controller.alternateCurrentTurn();
-          controller.mainGame();
+          if(!controller.winningStatus()){
+            controller.getCurrentTurn() == player2 ? view.showCurrentTurn(player1) : view.showCurrentTurn(player2);
+            clickedElement.off('click');
+            controller.alternateCurrentTurn();
+            controller.mainGame();
+          }else{
+              controller.freshGame();
+          }
+
     },
     showWinningStatus: function(winningStatustext, WoninRow,player1score,player2score) {
         $(".playerOneScores").text(player1score);
@@ -306,6 +310,10 @@ var view = {
         $(".msgIndicator").show();
         $(".options").removeClass("optionsFocus");
         $(".inputBox").removeClass("winningRow");
+    },
+    changeToFreshGame:function(){
+      $(".inputBox").text("");
+      $(".inputBox").removeClass("winningRow");
     },
     removeAllClicks: function() {
         $(".inputBox").off();
