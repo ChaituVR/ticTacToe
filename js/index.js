@@ -21,11 +21,12 @@ var model = {
     currentTurn: "",
     currentBoardState: defualtBoard,
     WonBy: null,
-    WoninRow: null
+    WoninRow: null,
+    playerOneScores:0,
+    playerTwoScores:0
 };
 
-var initialmodel =JSON.parse(JSON.stringify(model));
-
+var initialmodel =JSON.stringify(model) //JSON.parse(JSON.stringify(model));
 var controller = {
     init: function() {
         this.newGameState();
@@ -35,7 +36,7 @@ var controller = {
         // model.userSelection = "a";
         // model.computerSelection = "a";
         // model.currentBoardState = defualtBoard;
-        model= initialmodel;
+        model= JSON.parse(initialmodel);
         view.removeAllClicks();
         view.loadUserClicks();
         view.loadOptionsClicks();
@@ -115,10 +116,12 @@ var controller = {
     winningStatus: function() {
         if (this.checkForplayerOne(model.currentBoardState)) {
             model.WonBy = player1;
-            view.showWinningStatus(model.WonBy + " Won!!!", model.WoninRow)
+            model.playerOneScores++;
+            view.showWinningStatus(model.WonBy + " Won!!!", model.WoninRow,model.playerOneScores,model.playerTwoScores)
         } else if (this.checkForplayerTwo(model.currentBoardState)) {
             model.WonBy = player2;
-            view.showWinningStatus(model.WonBy + " Won!!!", model.WoninRow)
+            model.playerTwoScores++;
+            view.showWinningStatus(model.WonBy + " Won!!!", model.WoninRow,model.playerOneScores,model.playerTwoScores)
         }
     },
     computerCheckForWinning(currentBoardStateforComputer) {
@@ -147,12 +150,22 @@ var controller = {
     },
     playComputer() {
         var empty = controller.getEmptyPlaces(model.currentBoardState);
-        if (empty.length == 9) {
+        if (empty.length == 9 ) {
             var random = empty[Math.floor(Math.random() * empty.length)];
             $(".inputBox:eq(" + random + ")").trigger('click');
         } else {
+            for(var k in empty){
+              $(".inputBox:eq(" + empty[k] + ")").off();
+            }
             var computerGenerated = this.minmax(empty);
-            $(".inputBox:eq(" + computerGenerated + ")").trigger('click');
+            setTimeout(function(){
+              for(var k in empty){
+                $(".inputBox:eq(" + empty[k] + ")").click(function() {
+                  view.clickFunction($(this));
+                });
+              }
+              $(".inputBox:eq(" + computerGenerated + ")").trigger('click');
+            },500);
         }
     },
     minmax(emptyVals) {
@@ -212,38 +225,67 @@ var view = {
     },
     loadUserClicks: function() {
         $(".inputBox").click(function() {
-            if (controller.getCurrentTurn() == player2) {
-                $(this).text(model.computerSelection);
-                model.currentBoardState[$(".inputBox").index(this)] = 1
-            } else if (controller.getCurrentTurn() == player1) {
-                $(this).text(model.userSelection);
-                model.currentBoardState[$(".inputBox").index(this)] = 0
-            }
-
-            controller.winningStatus();
-            controller.getCurrentTurn() == player2 ? view.showCurrentTurn(player1) : view.showCurrentTurn(player2);
-            $(this).off('click');
-            controller.alternateCurrentTurn();
-            controller.mainGame();
-        });
+          view.clickFunction($(this));
+        //     if (controller.getCurrentTurn() == player2) {
+        //         $(this).text(model.computerSelection);
+        //         model.currentBoardState[$(".inputBox").index(this)] = 1
+        //     } else if (controller.getCurrentTurn() == player1) {
+        //         $(this).text(model.userSelection);
+        //         model.currentBoardState[$(".inputBox").index(this)] = 0
+        //     }
+        //
+        //     controller.winningStatus();
+        //     controller.getCurrentTurn() == player2 ? view.showCurrentTurn(player1) : view.showCurrentTurn(player2);
+        //     $(this).off('click');
+        //     controller.alternateCurrentTurn();
+        //     controller.mainGame();
+       });
     },
-    showWinningStatus: function(winningStatustext, WoninRow) {
+    clickFunction(clickedElement){
+          if (controller.getCurrentTurn() == player2) {
+              clickedElement.text(model.computerSelection);
+              model.currentBoardState[$(".inputBox").index(clickedElement)] = 1
+          } else if (controller.getCurrentTurn() == player1) {
+              clickedElement.text(model.userSelection);
+              model.currentBoardState[$(".inputBox").index(clickedElement)] = 0
+          }
+
+          controller.winningStatus();
+          controller.getCurrentTurn() == player2 ? view.showCurrentTurn(player1) : view.showCurrentTurn(player2);
+          clickedElement.off('click');
+          controller.alternateCurrentTurn();
+          controller.mainGame();
+    },
+    showWinningStatus: function(winningStatustext, WoninRow,player1score,player2score) {
+        $(".playerOneScores").text(player1score);
+        $(".playerTwoScores").text(player2score);
         var winningRowIndexes = winningModes[WoninRow];
         for (var a = 0; a < winningRowIndexes.length; a++) {
             $(".inputBox:eq( " + winningRowIndexes[a] + " )").addClass("winningRow");
         }
-        // swal({
-        //     title: winningStatustext,
-        //     timer: 800,
-        //     showConfirmButton: false,
-        //     allowOutsideClick: true
-        // }).done();
+        swal({
+            title: winningStatustext,
+            timer: 800,
+            showConfirmButton: false,
+            allowOutsideClick: true
+        }).done();
         $(".inputBox").off('click');
     },
     showCurrentTurn: function(current) {
         if (current == player2) {
+            $(".playerOneuserSelection").text(model.userSelection);
+            $(".playerTwouserSelection").text(model.computerSelection);
+
+            $(".playerOneStatus").css("background-color","transparent")
+            $(".playerTwoStatus").css("background-color","#9E9E9E")
+
             $('#currentTurn').text(player2+"'s turn");
         } else if (current == player1) {
+          $(".playerOneuserSelection").text(model.userSelection);
+          $(".playerTwouserSelection").text(model.computerSelection);
+          $(".playerOneStatus").css("background-color","#9E9E9E")
+          $(".playerTwoStatus").css("background-color","transparent")
+
             $('#currentTurn').text(player1+"'s turn");
         } else if (current == "") {
             $('#currentTurn').text("");

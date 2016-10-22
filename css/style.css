@@ -85,3 +85,18 @@ html, body {
 .optionsFocus, .options:focus, .options:hover {
     background-color: #D5D46F;
 }
+
+
+.playerOneStatus,.playerTwoStatus{
+  margin:20px auto;
+  width:100px;
+  height:90px;
+  padding:5px;
+  border:solid;
+  font-weight: bold;
+  display: inline-block;
+}
+.playerOneuserSelection,.playerTwouserSelection{
+ display: block;
+ font-size: 3em;
+}
