@@ -71,7 +71,7 @@ html, body {
     cursor: pointer;
 }
 
-.options,.playeroptions {
+.options,.playeroptions,.leveloptions {
     background: #59A985;
     border: 5px solid;
     width: 90px;
@@ -82,13 +82,19 @@ html, body {
     cursor: pointer;
 }
 
-.optionsFocus, .options:focus, .options:hover ,.playeroptions:hover , .playeroptions:focus{
+.optionsFocus, .options:focus, .options:hover ,.playeroptions:hover , .playeroptions:focus,.leveloptions:focus,.leveloptions:hover{
     background-color: #D5D46F;
 }
 
 .playeroptions{
   font-size:1.3em;
   width:130px;
+  margin:20px
+}
+.leveloptions{
+  font-size:1.3em;
+  width:80px;
+  height:80px;
   margin:20px
 }
 .resetbtn{

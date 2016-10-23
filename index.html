@@ -19,8 +19,8 @@
 </head>
 
 <body>
-    <div class="playerOneStatus">Player<span class="playerOneuserSelection">X</span><span class="playerOneScores">0</span></div>
-    <div class="playerTwoStatus">Computer<span class="playerTwouserSelection">O</span><span class="playerTwoScores">0</span></div>
+    <div class="playerOneStatus"><span id="playerOneName">Player</span><span class="playerOneuserSelection">X</span><span class="playerOneScores">0</span></div>
+    <div class="playerTwoStatus"><span id="playerTwoName">Computer</span><span class="playerTwouserSelection">O</span><span class="playerTwoScores">0</span></div>
 
     <div id="board">
         <div class="innerShadow"></div>
@@ -29,15 +29,14 @@
               <h1 style="font-weight:lighter;margin-top:40px;">Play against :</h1>
               <input class='playeroptions' type="button" value="Player - 2" />
               <input class='playeroptions' type="button" value="Computer" />
-              <!-- <input class='options' type="button" value="o" />
-              <input class='options' type="button" value="x" /> -->
-              <!-- <h3>Player - 1</h3>
-              <button onClick="controller.startGame()" class="startGame">Start >></button> -->
+          </div>
+          <div id="CoputerLevelSelection">
+              <h1 style="font-weight:lighter;margin-top:40px;">Play against :</h1>
+              <input class='leveloptions' type="button" value="Easy" />
+              <input class='leveloptions' type="button" value="Hard" />
           </div>
             <div id="optionSelection">
                 <h1 style="font-weight:lighter;">Select an Option:</h1>
-                <!-- <input class='options' style="font-size:1.3em;width:130px;margin:10px" type="button" value="Player" />
-                <input class='options' style="font-size:1.3em;width:130px;margin:10px" type="button" value="Computer" /> -->
                 <input class='options' type="button" value="o" />
                 <input class='options' type="button" value="x" />
                 <h3>Player - 1</h3>

@@ -1,15 +1,29 @@
 $(document).ready(function() {
     controller.init();
     $("#optionSelection").hide();
+    $("#CoputerLevelSelection").hide();
+    $(".playeroptions").on('click',function(){
+        player2=this.value;
+        if(player2 == "Computer"){
+          $("#playerSelection").hide();
+          $("#CoputerLevelSelection").show();
+          $(".leveloptions").on('click',function(){
+                level=this.value;
+                console.log(level);
+                $("#CoputerLevelSelection").hide();
+                $("#optionSelection").show();
+          })
+        }
+        else{
+          $("#playerSelection").hide();
+          $("#optionSelection").show();
+        }
 
-$(".playeroptions").on('click',function(){
-  console.log(this.value);
-  $("#playerSelection").hide();
-  $("#optionSelection").show();
 })
 });
 var player1 = "Player - 1";
 var player2 = "Computer";
+var level = "";
 var defualtBoard = ["", "", "", "", "", "", "", "", ""];
 var winningModes = [
     [0, 1, 2],
@@ -167,8 +181,9 @@ var controller = {
     },
     mainGame() {
         if (controller.getCurrentTurn() == player2) {
-            console.log(controller.getCurrentTurn());
-            controller.playComputer();
+          if(player2=="Computer"){
+              controller.playComputer();
+          }
         }
     },
     getEmptyPlaces(board) {
@@ -341,6 +356,8 @@ var view = {
         $(".options").off();
     },
     showScoreBoard:function(){
+      $("#playerOneName").text(player1);
+      $("#playerTwoName").text(player2);
       $(".playerOneStatus").css("visibility","visible");
       $(".playerTwoStatus").css("visibility","visible");
     },
