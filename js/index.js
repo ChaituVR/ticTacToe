@@ -1,6 +1,12 @@
 $(document).ready(function() {
     controller.init();
+    $("#optionSelection").hide();
 
+$(".playeroptions").on('click',function(){
+  console.log(this.value);
+  $("#playerSelection").hide();
+  $("#optionSelection").show();
+})
 });
 var player1 = "Player - 1";
 var player2 = "Computer";

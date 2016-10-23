@@ -71,7 +71,7 @@ html, body {
     cursor: pointer;
 }
 
-.options {
+.options,.playeroptions {
     background: #59A985;
     border: 5px solid;
     width: 90px;
@@ -82,8 +82,14 @@ html, body {
     cursor: pointer;
 }
 
-.optionsFocus, .options:focus, .options:hover {
+.optionsFocus, .options:focus, .options:hover ,.playeroptions:hover , .playeroptions:focus{
     background-color: #D5D46F;
+}
+
+.playeroptions{
+  font-size:1.3em;
+  width:130px;
+  margin:20px
 }
 .resetbtn{
   background-color: rgb(246, 71, 71);
