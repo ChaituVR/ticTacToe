@@ -86,8 +86,15 @@ html, body {
     background-color: #D5D46F;
 }
 .resetbtn{
-  width: 100px;
-  height:50px;
+  background-color: rgb(246, 71, 71);
+    border: none;
+    color: white;
+    padding: 15px 32px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    margin: 14px 2px;
+    cursor: pointer;
 }
 
 .playerOneStatus,.playerTwoStatus{

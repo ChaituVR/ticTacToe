@@ -31,14 +31,16 @@ var initialmodel =JSON.stringify(model) //JSON.parse(JSON.stringify(model));
 var controller = {
     init: function() {
         this.newGameState();
-        view.hideScoreBoard();
+
     },
     newGameState: function() {
         model= JSON.parse(initialmodel);
+        view.hideScoreBoard();
         view.removeAllClicks();
         view.loadUserClicks();
         view.loadOptionsClicks();
         view.changeToNewGame();
+        view.setScoreBoardToDefaults(model.playerOneScores,model.playerTwoScores);
         view.showCurrentTurn("");
     },
     freshGame(){
@@ -49,7 +51,6 @@ var controller = {
       model.WonBy= null;
       model.WoninRow=null;
       view.showCurrentTurn(controller.getCurrentTurn());
-      console.log(controller.getCurrentTurn());
       view.loadUserClicks();
       controller.mainGame();
     },
@@ -296,16 +297,16 @@ var view = {
             $(".playerOneStatus").css("background-color","transparent")
             $(".playerTwoStatus").css("background-color","#9E9E9E")
 
-            $('#currentTurn').text(player2+"'s turn");
+            // $('#currentTurn').text(player2+"'s turn");
         } else if (current == player1) {
           $(".playerOneuserSelection").text(model.userSelection.toUpperCase());
           $(".playerTwouserSelection").text(model.computerSelection.toUpperCase());
           $(".playerOneStatus").css("background-color","#9E9E9E")
           $(".playerTwoStatus").css("background-color","transparent")
 
-            $('#currentTurn').text(player1+"'s turn");
+            // $('#currentTurn').text(player1+"'s turn");
         } else if (current == "") {
-            $('#currentTurn').text("");
+            // $('#currentTurn').text("");
         }
     },
     showErrorMsg: function(errortext,duration) {
@@ -340,5 +341,9 @@ var view = {
     hideScoreBoard:function(){
       $(".playerOneStatus").css("visibility","hidden");
       $(".playerTwoStatus").css("visibility","hidden");
+    },
+    setScoreBoardToDefaults(player1score,player2score){
+      $(".playerOneScores").text(player1score);
+      $(".playerTwoScores").text(player2score);
     }
 };
