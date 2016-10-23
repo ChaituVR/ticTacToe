@@ -1,5 +1,6 @@
 $(document).ready(function() {
     controller.init();
+
 });
 var player1 = "Player - 1";
 var player2 = "Computer";
@@ -30,6 +31,7 @@ var initialmodel =JSON.stringify(model) //JSON.parse(JSON.stringify(model));
 var controller = {
     init: function() {
         this.newGameState();
+        view.hideScoreBoard();
     },
     newGameState: function() {
         model= JSON.parse(initialmodel);
@@ -38,20 +40,18 @@ var controller = {
         view.loadOptionsClicks();
         view.changeToNewGame();
         view.showCurrentTurn("");
-
     },
     freshGame(){
       model.userSelection == "x" ? model.currentTurn = player1 : model.currentTurn = player2;
       view.removeAllClicks();
       view.changeToFreshGame();
-      console.log("NEW GAME")
       model.currentBoardState= JSON.parse(JSON.stringify(defualtBoard));
       model.WonBy= null;
       model.WoninRow=null;
-      // view.loadOptionsClicks();
-      // view.changeToNewGame();
       view.showCurrentTurn(controller.getCurrentTurn());
+      console.log(controller.getCurrentTurn());
       view.loadUserClicks();
+      controller.mainGame();
     },
     getWinningScenarios:function(board) {
         var subarr = [],
@@ -67,9 +67,10 @@ var controller = {
     startGame: function() {
         if (model.userSelection != "a") {
             view.removeStartOptions();
+            view.showScoreBoard();
             controller.mainGame();
         } else {
-            view.showErrorMsg('Please select one option');
+            view.showErrorMsg('Please select one option',500);
         }
     },
     updateUserSelection: function(currentValue) {
@@ -127,14 +128,25 @@ var controller = {
             model.WonBy = player1;
             model.playerOneScores++;
             view.showWinningStatus(model.WonBy + " Won!!!", model.WoninRow,model.playerOneScores,model.playerTwoScores);
-            controller.freshGame();
-            return true;
+            setTimeout(function(){
+              controller.freshGame();
+              return true;
+            },1500);
         } else if (this.checkForplayerTwo(model.currentBoardState)) {
             model.WonBy = player2;
             model.playerTwoScores++;
             view.showWinningStatus(model.WonBy + " Won!!!", model.WoninRow,model.playerOneScores,model.playerTwoScores);
+            setTimeout(function(){
+              controller.freshGame();
+              return true;
+            },1500);
+        }
+        else if (this.getEmptyPlaces(model.currentBoardState).length==0) {
+          view.showErrorMsg("Its a Draw ! !",900);
+          setTimeout(function(){
             controller.freshGame();
             return true;
+          },1500);
         }
     },
     computerCheckForWinning(currentBoardStateforComputer) {
@@ -148,6 +160,7 @@ var controller = {
     },
     mainGame() {
         if (controller.getCurrentTurn() == player2) {
+            console.log(controller.getCurrentTurn());
             controller.playComputer();
         }
     },
@@ -165,7 +178,7 @@ var controller = {
         var empty = controller.getEmptyPlaces(model.currentBoardState);
         if (empty.length == 9 ) {
             var random = empty[Math.floor(Math.random() * empty.length)];
-            $(".inputBox:eq(" + random + ")").trigger('click');
+            setTimeout(function(){$(".inputBox:eq(" + random + ")").trigger('click');},500);
         } else {
             for(var k in empty){
               $(".inputBox:eq(" + empty[k] + ")").off();
@@ -178,7 +191,7 @@ var controller = {
                 });
               }
               $(".inputBox:eq(" + computerGenerated + ")").trigger('click');
-            },300);
+            },500);
         }
     },
     minmax(emptyVals) {
@@ -256,7 +269,7 @@ var view = {
             controller.alternateCurrentTurn();
             controller.mainGame();
           }else{
-              controller.freshGame();
+              // controller.freshGame();
           }
 
     },
@@ -277,16 +290,16 @@ var view = {
     },
     showCurrentTurn: function(current) {
         if (current == player2) {
-            $(".playerOneuserSelection").text(model.userSelection);
-            $(".playerTwouserSelection").text(model.computerSelection);
+            $(".playerOneuserSelection").text(model.userSelection.toUpperCase());
+            $(".playerTwouserSelection").text(model.computerSelection.toUpperCase());
 
             $(".playerOneStatus").css("background-color","transparent")
             $(".playerTwoStatus").css("background-color","#9E9E9E")
 
             $('#currentTurn').text(player2+"'s turn");
         } else if (current == player1) {
-          $(".playerOneuserSelection").text(model.userSelection);
-          $(".playerTwouserSelection").text(model.computerSelection);
+          $(".playerOneuserSelection").text(model.userSelection.toUpperCase());
+          $(".playerTwouserSelection").text(model.computerSelection.toUpperCase());
           $(".playerOneStatus").css("background-color","#9E9E9E")
           $(".playerTwoStatus").css("background-color","transparent")
 
@@ -295,11 +308,11 @@ var view = {
             $('#currentTurn').text("");
         }
     },
-    showErrorMsg: function(errortext) {
+    showErrorMsg: function(errortext,duration) {
         swal({
             title: errortext,
             type: 'warning',
-            timer: 500,
+            timer: duration,
             showConfirmButton: false,
             allowOutsideClick: true
         }).done();
@@ -314,9 +327,18 @@ var view = {
     changeToFreshGame:function(){
       $(".inputBox").text("");
       $(".inputBox").removeClass("winningRow");
+
     },
     removeAllClicks: function() {
         $(".inputBox").off();
         $(".options").off();
+    },
+    showScoreBoard:function(){
+      $(".playerOneStatus").css("visibility","visible");
+      $(".playerTwoStatus").css("visibility","visible");
+    },
+    hideScoreBoard:function(){
+      $(".playerOneStatus").css("visibility","hidden");
+      $(".playerTwoStatus").css("visibility","hidden");
     }
 };
