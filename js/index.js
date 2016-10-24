@@ -15,8 +15,22 @@ $(document).ready(function() {
           })
         }
         else{
-          $("#playerSelection").hide();
-          $("#optionSelection").show();
+          var socket = io.connect( "https://learning-projects-chaitanya33.c9users.io");
+          socket.on('ConnectionCount', function(ConnectionCount){
+            if(ConnectionCount==1){
+              $("#playerSelection").hide();
+              $("#optionSelection").show();
+            }
+            else if(ConnectionCount>1){
+              $("#playerSelection").hide();
+              // socket.on('playerSelection', function(selected){
+              model.userSelection=selected;
+              controller.startGame();
+            // }
+            }
+          });
+
+
         }
 
 })
