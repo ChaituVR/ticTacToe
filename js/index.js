@@ -1,4 +1,6 @@
 $(document).ready(function() {
+  $(".spinner").hide();
+  $("#MainGame").css("visibility","visible");
     controller.init();
     $("#optionSelection").hide();
     $("#CoputerLevelSelection").hide();
@@ -246,10 +248,10 @@ var controller = {
                 var innerEmpty = controller.getEmptyPlaces(innerCurrentBoard);
                 var ended = endState(innerCurrentBoard);
                 if (!ended && innerEmpty.length > 0) {
-                    if (localTurn == 1) {
-                        scoreBoard[a] =Math.min.apply(null, recursionOfBoard(innerCurrentBoard, innerEmpty, 0, stepsCount + 1));
-                    } else if (localTurn == 0) {
-                        scoreBoard[a] =Math.max.apply(null, recursionOfBoard(innerCurrentBoard, innerEmpty, 1, stepsCount + 1));
+                    if ((localTurn == 1 && level == "Hard") || (localTurn == 0 && level == "Easy")) {
+                        scoreBoard[a] =Math.min.apply(null, recursionOfBoard(innerCurrentBoard, innerEmpty, localTurn == 1 ? 0 :1, stepsCount + 1));
+                    } else if ((localTurn == 0 && level == "Hard")  || (localTurn == 1 && level == "Easy")) {
+                        scoreBoard[a] =Math.max.apply(null, recursionOfBoard(innerCurrentBoard, innerEmpty, localTurn == 1 ? 0 :1 , stepsCount + 1));
                     }
                 } else {
                     if (ended && localTurn == 1) {
